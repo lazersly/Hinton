@@ -47,7 +47,7 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   self.searchController.searchResultsUpdater = self.searchTableView;
   self.searchController.dimsBackgroundDuringPresentation = NO;
   self.searchController.searchBar.delegate = self;
-  self.searchController.searchBar.scopeButtonTitles = @[@"Address", @"Genre"];
+  self.searchController.searchBar.scopeButtonTitles = @[@"Address", @"Genre", @"Price"];
   self.searchController.view.tintColor = [UIColor darkGrayColor];
   [self.mapView addSubview:self.searchController.searchBar];
   
@@ -146,10 +146,18 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
 
 -(void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
   
+  //show tableview of genres
   if (selectedScope == 1) {
     [self presentSearchTable];
+    //[searchBar resignFirstResponder];
   } else if (self.isShowingSearchTableView) {
     [self dismissSearchTable];
+  }
+  //show tableview of price tiers
+  if (selectedScope == 2) {
+    [self presentSearchTable];
+  } else if (self.isShowingSearchTableView) {
+    //[self dismissSearchTable];
   }
 }
 

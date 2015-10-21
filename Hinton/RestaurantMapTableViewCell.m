@@ -22,6 +22,8 @@
 - (void)awakeFromNib {
     // Initialization code
   
+ 
+  
   self.selectionStyle = UITableViewCellSelectionStyleNone;
   self.mapView.delegate = self;
 }
@@ -66,9 +68,9 @@
 
 -(MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
   MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
-  renderer.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:0.5];
-  renderer.lineWidth = 10;
-  
+//  renderer.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:0.5];
+//  renderer.lineWidth = 10;
+//  
   return renderer;
 }
 

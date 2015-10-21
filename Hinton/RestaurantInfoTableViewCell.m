@@ -11,6 +11,7 @@
 #import "Address.h"
 #import "Hours.h"
 
+
 @interface RestaurantInfoTableViewCell ()
 
 @property (strong, nonatomic) IBOutlet UILabel *restaurantNameLabel;
@@ -46,6 +47,18 @@
   self.restaurantAddressLabel.text = nil;
   self.restaurantHoursLabel.text = nil;
   self.recommendedItemLabel.text = nil;
+  
+  //enable interaction for phone number label
+  self.restaurantPhoneLabel.userInteractionEnabled = YES;
+  UITapGestureRecognizer *tapGesture =
+  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callPhone:)];
+  [self.restaurantPhoneLabel addGestureRecognizer:tapGesture];
+}
+
+-(IBAction)callPhone:(id)sender {
+  NSString *formattedPhoneNumberStringPrefix = @"tel:";
+  //format self.restaurantPhone string here for use below
+  //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:s]];
 }
 
 
@@ -150,7 +163,47 @@
 -(void)setRestaurantHours:(Hours *)restaurantHours {
   _restaurantHours = restaurantHours;
 #warning Incomplete
-  self.restaurantHoursLabel.text = restaurantHours.wednesdayHours;
+  //needs something to detect what day of the week it is and show that day's hours
+  //get current day
+  NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+  NSDateComponents *comps = [calendar components:NSCalendarUnitWeekday fromDate:[NSDate date]];
+  long weekday = [comps weekday];
+  
+  NSLog(@"today's day num: %ld", weekday);
+  
+  switch (weekday) {
+    case 0:
+      self.restaurantHoursLabel.text = restaurantHours.sundayHours;
+      break;
+      
+    case 1:
+     self.restaurantHoursLabel.text = restaurantHours.mondayHours;
+      break;
+      
+    case 2:
+      self.restaurantHoursLabel.text = restaurantHours.tuesdayHours;
+      break;
+      
+    case 3:
+      self.restaurantHoursLabel.text = restaurantHours.wednesdayHours;
+      break;
+      
+    case 4:
+      self.restaurantHoursLabel.text = restaurantHours.thursdayHours;
+      break;
+      
+    case 5:
+      self.restaurantHoursLabel.text = restaurantHours.fridayHours;
+      break;
+      
+    case 6:
+      self.restaurantHoursLabel.text = restaurantHours.saturdayHours;
+      break;
+      
+    default:
+      break;
+  }
+  
 }
 
 - (IBAction)mainWebsiteButtonPressed:(id)sender {

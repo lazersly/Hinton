@@ -150,6 +150,7 @@
 		AD8976D01B0A8D5D00564BC4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				ADEBD9621B0A5227009418BD /* Main.storyboard */,
 				ADF4F98D1B0F932900124610 /* food_1.jpg */,
 				ADF4F98B1B0F932000124610 /* food_2.jpeg */,
 				AD8976EF1B0BEFC200564BC4 /* RestaurantInfoTableViewCell.h */,
@@ -158,7 +159,6 @@
 				AD8976F31B0BFC9D00564BC4 /* RestaurantMapTableViewCell.m */,
 				AD8976F51B0BFD3900564BC4 /* RestaurantImageTableViewCell.h */,
 				AD8976F61B0BFD3900564BC4 /* RestaurantImageTableViewCell.m */,
-				ADEBD9621B0A5227009418BD /* Main.storyboard */,
 				ADEBD9651B0A5227009418BD /* Images.xcassets */,
 				ADEBD9671B0A5227009418BD /* LaunchScreen.xib */,
 			);
@@ -317,7 +317,7 @@
 				TargetAttributes = {
 					ADEBD9511B0A5226009418BD = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = WM7R3GJ26R;
+						DevelopmentTeam = JUS3K85LAG;
 					};
 					ADEBD96D1B0A5227009418BD = {
 						CreatedOnToolsVersion = 6.3.1;

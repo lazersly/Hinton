@@ -59,8 +59,10 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   if ([self.delegate respondsToSelector:@selector(searchTableDidSelectGenre:)]) {
     [self.delegate searchTableDidSelectGenre:self.filteredGenres[indexPath.row]];
+    
   }
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
 }
 
 #pragma mark - SearchController Delegate
