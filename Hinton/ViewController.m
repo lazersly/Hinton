@@ -3,7 +3,7 @@
 //  Hinton
 //
 //  Created by Brandon Roberts on 5/18/15.
-//  Copyright (c) 2015 BR World. All rights reserved.
+//  Copyright © 2015 Gina Hinton. All rights reserved.
 //
 
 #import "ViewController.h"
@@ -42,7 +42,7 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-
+  
   self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
   self.searchController.searchResultsUpdater = self.searchTableView;
   self.searchController.dimsBackgroundDuringPresentation = NO;
@@ -113,7 +113,7 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   return annoView;
 }
 
--(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {  
+-(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
   [self.searchController setActive:NO];
   
   [self presentDetailViewWithAnnotation:view.annotation];
@@ -211,7 +211,7 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
 #pragma mark - My Methods
 
 - (IBAction)userLocationButtonPressed:(id)sender {
-    [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(self.locationManager.location.coordinate, initialMapViewDistance, initialMapViewDistance) animated:YES];
+  [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(self.locationManager.location.coordinate, initialMapViewDistance, initialMapViewDistance) animated:YES];
 }
 
 -(void)dismissSearchTable {
@@ -255,35 +255,35 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   
   [UIView animateWithDuration:dismissViewAnimationDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
     self.restaurantDetail.view.frame = CGRectMake(0, self.mapView.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height - self.header.frame.size.height - [UIApplication sharedApplication].statusBarFrame.size.height);
-//    self.restaurantDetail.view.bounds = bounds;
+    //    self.restaurantDetail.view.bounds = bounds;
   } completion:^(BOOL finished) {
     [self.restaurantDetail.view setNeedsDisplay];
   }];
-
-//  MapPoint *mapPoint = (MapPoint *)annotation;
-//  [annotation coordinate];
-//  
-//  [self.view addSubview:self.restaurantDetail.view];
-//  [self.restaurantDetail didMoveToParentViewController:self];
-//  [self addChildViewController:self.restaurantDetail];
-//  [self.view bringSubviewToFront:self.restaurantDetail.view];
-//  
-//  CGPoint annotationCGPoint = [self.mapView convertCoordinate:[annotation coordinate] toPointToView:self.mapView];
-//  
-//  
-//  
-//  
-//  self.restaurantDetail.view.frame = CGRectMake(annotationCGPoint.x, annotationCGPoint.y, 0, 0);
-//  self.restaurantDetail.annotation = mapPoint;
-//  
-//  [UIView animateWithDuration:dismissViewAnimationDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-//    self.restaurantDetail.view.frame = CGRectMake(0, self.mapView.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height - self.header.frame.size.height - [UIApplication sharedApplication].statusBarFrame.size.height);
-//  } completion:^(BOOL finished) {
-//    
-//  }];
   
-
-
+  //  MapPoint *mapPoint = (MapPoint *)annotation;
+  //  [annotation coordinate];
+  //
+  //  [self.view addSubview:self.restaurantDetail.view];
+  //  [self.restaurantDetail didMoveToParentViewController:self];
+  //  [self addChildViewController:self.restaurantDetail];
+  //  [self.view bringSubviewToFront:self.restaurantDetail.view];
+  //
+  //  CGPoint annotationCGPoint = [self.mapView convertCoordinate:[annotation coordinate] toPointToView:self.mapView];
+  //
+  //
+  //
+  //
+  //  self.restaurantDetail.view.frame = CGRectMake(annotationCGPoint.x, annotationCGPoint.y, 0, 0);
+  //  self.restaurantDetail.annotation = mapPoint;
+  //
+  //  [UIView animateWithDuration:dismissViewAnimationDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+  //    self.restaurantDetail.view.frame = CGRectMake(0, self.mapView.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height - self.header.frame.size.height - [UIApplication sharedApplication].statusBarFrame.size.height);
+  //  } completion:^(BOOL finished) {
+  //
+  //  }];
+  
+  
+  
 }
 
 -(void)enterWaitMode {
