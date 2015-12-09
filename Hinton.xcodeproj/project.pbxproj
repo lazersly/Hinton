@@ -28,6 +28,7 @@
 		DF8E3D9D1C117F070010D372 /* MapPointParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D921C117F070010D372 /* MapPointParser.m */; };
 		DF8E3D9E1C117F070010D372 /* MenuItemPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D941C117F070010D372 /* MenuItemPhoto.m */; };
 		DF8E3D9F1C117F070010D372 /* Restaurant.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D961C117F070010D372 /* Restaurant.m */; };
+		DF95F3D31C16A20B0096D386 /* LocationService.m in Sources */ = {isa = PBXBuildFile; fileRef = DF95F3D21C16A20B0096D386 /* LocationService.m */; };
 		DF9648C71C117531005A0753 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF9648C61C117531005A0753 /* MapKit.framework */; };
 		DFF32A281C11485200CCF53C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DFF32A271C11485200CCF53C /* main.m */; };
 		DFF32A2B1C11485200CCF53C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFF32A2A1C11485200CCF53C /* AppDelegate.m */; };
@@ -77,6 +78,8 @@
 		DF8E3D941C117F070010D372 /* MenuItemPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuItemPhoto.m; sourceTree = "<group>"; };
 		DF8E3D951C117F070010D372 /* Restaurant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Restaurant.h; sourceTree = "<group>"; };
 		DF8E3D961C117F070010D372 /* Restaurant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Restaurant.m; sourceTree = "<group>"; };
+		DF95F3D11C16A20B0096D386 /* LocationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationService.h; sourceTree = "<group>"; };
+		DF95F3D21C16A20B0096D386 /* LocationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationService.m; sourceTree = "<group>"; };
 		DF9648C61C117531005A0753 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DFF32A231C11485200CCF53C /* Hinton.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hinton.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFF32A271C11485200CCF53C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -136,14 +139,16 @@
 		DF8E3D7F1C117E480010D372 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				DF8E3D801C117E6F0010D372 /* BackendService.h */,
-				DF8E3D811C117E6F0010D372 /* BackendService.m */,
-				DF8E3D821C117E6F0010D372 /* ImageFetcher.h */,
-				DF8E3D831C117E6F0010D372 /* ImageFetcher.m */,
 				DF1377E91C125A7100F7BBE4 /* DataService.h */,
 				DF1377EA1C125A7100F7BBE4 /* DataService.m */,
+				DF8E3D801C117E6F0010D372 /* BackendService.h */,
+				DF8E3D811C117E6F0010D372 /* BackendService.m */,
 				DF1377EC1C125A9200F7BBE4 /* BundleService.h */,
 				DF1377ED1C125A9200F7BBE4 /* BundleService.m */,
+				DF8E3D821C117E6F0010D372 /* ImageFetcher.h */,
+				DF8E3D831C117E6F0010D372 /* ImageFetcher.m */,
+				DF95F3D11C16A20B0096D386 /* LocationService.h */,
+				DF95F3D21C16A20B0096D386 /* LocationService.m */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -397,6 +402,7 @@
 				DF8E3D9A1C117F070010D372 /* GenreParser.m in Sources */,
 				DFF32A281C11485200CCF53C /* main.m in Sources */,
 				DF8E3D851C117E6F0010D372 /* ImageFetcher.m in Sources */,
+				DF95F3D31C16A20B0096D386 /* LocationService.m in Sources */,
 				DF8E3D9C1C117F070010D372 /* MapPoint.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

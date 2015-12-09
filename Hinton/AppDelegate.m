@@ -6,10 +6,15 @@
 //  Copyright © 2015 Gina Hinton. All rights reserved.
 //
 
+
 #import "AppDelegate.h"
 #import "DataService.h"
+#import "LocationService.h"
+
 
 @interface AppDelegate ()
+
+@property (strong, nonatomic) LocationService * locationService;
 
 @end
 
@@ -19,6 +24,11 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   // Override point for customization after application launch.
 
+  // Start our location service.
+  // This will cause a prompt for user consent if the user has not already given it.
+  self.locationService = [[LocationService alloc] init];
+
+  // Start our restaurant data service.
   self.restaurantDataService = [[DataService alloc] initWithTestMode: true];
   
   return YES;

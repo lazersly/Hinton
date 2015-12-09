@@ -19,17 +19,11 @@
 #import "SearchTableViewController.h"
 
 
-// Magic
-const CLLocationDegrees latitudeOfCodeFellows = 47.6235;
-const CLLocationDegrees longitudeOfCodeFellows = -122.3363;
+@interface ViewController () <MKMapViewDelegate, RestaurantDetailDelegate, UISearchBarDelegate, SearchTableDelegate>
 
 
-@interface ViewController () <CLLocationManagerDelegate, MKMapViewDelegate, RestaurantDetailDelegate, UISearchBarDelegate, SearchTableDelegate>
-
-@property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) IBOutlet UIView *header;
 @property (strong, nonatomic) IBOutlet MKMapView *mapView;
-@property (strong, nonatomic) IBOutlet UIProgressView *progressBar;
 @property (strong, nonatomic) IBOutlet UIButton *userLocationButton;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (strong, nonatomic) RestaurantDetailViewController *restaurantDetail;
@@ -41,12 +35,18 @@ const CLLocationDegrees longitudeOfCodeFellows = -122.3363;
 
 @end
 
+
 @implementation ViewController
 
-CLLocationDistance initialMapViewDistance = 4000;
-NSTimeInterval mapDimDuration = 0.1;
-float mapDimAlpha = 0.3;
-NSTimeInterval dismissViewAnimationDuration = 0.3;
+// Magic
+const CLLocationDegrees latitudeOfCodeFellows = 47.6235;
+const CLLocationDegrees longitudeOfCodeFellows = -122.3363;
+const CLLocationDistance initialMapViewDistance = 4000;
+
+const NSTimeInterval mapDimDuration = 0.1;
+const float mapDimAlpha = 0.3;
+const NSTimeInterval dismissViewAnimationDuration = 0.3;
+
 
 - (void)viewDidLoad {
   [super viewDidLoad];
@@ -69,17 +69,17 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   
   self.mapView.delegate = self;
   self.spinner.color = [UIColor darkGrayColor];
-  [self enterWaitMode];
-  [self.progressBar setProgress:0.0 animated:NO];
-  
-  self.locationManager = [[CLLocationManager alloc] init];
-  self.locationManager.delegate = self;
-  
-  CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitudeOfCodeFellows, longitudeOfCodeFellows);
-  [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(coordinate, initialMapViewDistance, initialMapViewDistance) animated:NO];
-  
+
+  // If this device supports location tracking, then show the user's location if we have it.
+  // TODO: replace our custom userLocationButton with a standard Apple MKUserTrackingBarButtonItem to let the user control tracking.
+  // (Because, you know, this phone does belong to the *user*, not us...)
   if ([CLLocationManager locationServicesEnabled]) {
-    [self.locationManager requestWhenInUseAuthorization];
+    self.mapView.showsUserLocation = YES;
+    [self.mapView setUserTrackingMode: MKUserTrackingModeFollow animated: YES];
+  } else {
+    // Set the original position of the map to South Lake Union.
+    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitudeOfCodeFellows, longitudeOfCodeFellows);
+    [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(coordinate, initialMapViewDistance, initialMapViewDistance) animated:NO];
   }
   
   [self enterWaitMode];
@@ -96,10 +96,6 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
 
 }
 
-//-(void)viewWillAppear:(BOOL)animated {
-//  [super viewWillAppear:animated];
-//  [self.searchController.searchBar sizeToFit];
-//}
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
   
@@ -126,27 +122,18 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   [self presentDetailViewWithAnnotation:view.annotation];
 }
 
+- (void) mapView: (MKMapView *) mapView didUpdateUserLocation: (MKUserLocation *) userLocation {
+
+  CLLocation * location = userLocation.location;
+  NSLog(@"MapView reports lat: %3.4f, long: %3.4f, alt: %3.0f m, head: %3.0f°, speed: %3.0f km/h", location.coordinate.latitude, location.coordinate.longitude, location.altitude, location.course, (location.speed * 3600.0 / 1000.0));
+
+}
+
+
 #pragma mark - CloseBannerDelegate
 
 -(void)userDidTapCloseButton {
   [self dismissDetailView];
-}
-
-#pragma mark - CLLocationManagerDelegate
-
--(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-  self.mapView.showsUserLocation = YES;
-  
-  if (status == kCLAuthorizationStatusAuthorizedWhenInUse) {
-    [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(manager.location.coordinate, initialMapViewDistance, initialMapViewDistance) animated:YES];
-  } else {
-    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitudeOfCodeFellows, longitudeOfCodeFellows);
-    [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(coordinate, initialMapViewDistance, initialMapViewDistance) animated:NO];
-  }
-}
-
--(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
-  NSLog(@"UserLocation: %@", userLocation);
 }
 
 #pragma mark - UISearchBarDelegate
@@ -220,8 +207,11 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
 
 #pragma mark - My Methods
 
+// If the user taps the location button, recenter the map on their location.
 - (IBAction)userLocationButtonPressed:(id)sender {
-  [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(self.locationManager.location.coordinate, initialMapViewDistance, initialMapViewDistance) animated:YES];
+
+  [self.mapView setUserTrackingMode: MKUserTrackingModeFollow animated: YES];
+  
 }
 
 -(void)dismissSearchTable {
@@ -254,6 +244,7 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
 }
 
 -(void)presentDetailViewWithAnnotation:(id<MKAnnotation>)annotation {
+
   self.restaurantDetail = [self.storyboard instantiateViewControllerWithIdentifier:@"RestaurantDetailVC"];
   self.restaurantDetail.delegate = self;
   [self.view addSubview:self.restaurantDetail.view];
@@ -269,58 +260,35 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   } completion:^(BOOL finished) {
     [self.restaurantDetail.view setNeedsDisplay];
   }];
-  
-  //  MapPoint *mapPoint = (MapPoint *)annotation;
-  //  [annotation coordinate];
-  //
-  //  [self.view addSubview:self.restaurantDetail.view];
-  //  [self.restaurantDetail didMoveToParentViewController:self];
-  //  [self addChildViewController:self.restaurantDetail];
-  //  [self.view bringSubviewToFront:self.restaurantDetail.view];
-  //
-  //  CGPoint annotationCGPoint = [self.mapView convertCoordinate:[annotation coordinate] toPointToView:self.mapView];
-  //
-  //
-  //
-  //
-  //  self.restaurantDetail.view.frame = CGRectMake(annotationCGPoint.x, annotationCGPoint.y, 0, 0);
-  //  self.restaurantDetail.annotation = mapPoint;
-  //
-  //  [UIView animateWithDuration:dismissViewAnimationDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-  //    self.restaurantDetail.view.frame = CGRectMake(0, self.mapView.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height - self.header.frame.size.height - [UIApplication sharedApplication].statusBarFrame.size.height);
-  //  } completion:^(BOOL finished) {
-  //
-  //  }];
-  
-  
-  
+
 }
 
 -(void)enterWaitMode {
-  
+
+  NSLog(@"Entering wait mode.");
+
   [UIView animateWithDuration:mapDimDuration animations:^{
+    [self.spinner startAnimating];
     self.mapView.alpha = mapDimAlpha;
     self.mapView.userInteractionEnabled = NO;
     self.userLocationButton.enabled = NO;
   } completion:^(BOOL finished) {
-    [self.spinner startAnimating];
   }];
   
 }
 
 -(void)exitWaitMode {
   
+  NSLog(@"Exiting wait mode.");
+
   [UIView animateWithDuration:mapDimDuration animations:^{
+    [self.spinner stopAnimating];
     self.mapView.alpha = 1.0;
     self.mapView.userInteractionEnabled = YES;
     self.userLocationButton.enabled = YES;
   } completion:^(BOOL finished) {
-    [self.spinner stopAnimating];
   }];
   
 }
-
-
-
 
 @end
