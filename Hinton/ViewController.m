@@ -6,15 +6,23 @@
 //  Copyright © 2015 Gina Hinton. All rights reserved.
 //
 
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
+
 #import "ViewController.h"
-#import "BackendService.h"
+#import "AppDelegate.h"
+#import "DataService.h"
 #import "MapPoint.h"
 #import "RestaurantDetailViewController.h"
 #import "RestaurantMapTableViewCell.h"
 #import "RestaurantImageTableViewCell.h"
 #import "SearchTableViewController.h"
-#import <MapKit/MapKit.h>
-#import <CoreLocation/CoreLocation.h>
+
+
+// Magic
+const CLLocationDegrees latitudeOfCodeFellows = 47.6235;
+const CLLocationDegrees longitudeOfCodeFellows = -122.3363;
+
 
 @interface ViewController () <CLLocationManagerDelegate, MKMapViewDelegate, RestaurantDetailDelegate, UISearchBarDelegate, SearchTableDelegate>
 
@@ -67,7 +75,7 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   self.locationManager = [[CLLocationManager alloc] init];
   self.locationManager.delegate = self;
   
-  CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(47.622152, -122.312965);
+  CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitudeOfCodeFellows, longitudeOfCodeFellows);
   [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(coordinate, initialMapViewDistance, initialMapViewDistance) animated:NO];
   
   if ([CLLocationManager locationServicesEnabled]) {
@@ -76,17 +84,16 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   
   [self enterWaitMode];
   
-  [BackendService fetchMapPointsForArea:CGRectZero completionHandler:^(NSArray *mapPoints, NSError *error) {
-    if (!error) {
-      self.allMapPoints = mapPoints;
-      self.currentMapPoints = mapPoints;
-    } else {
-      NSLog(@"Error: %@", error.localizedDescription);
-    }
-    
+  AppDelegate * appDelegate = [UIApplication sharedApplication].delegate;
+  [appDelegate.restaurantDataService fetchRestaurantsNearLatitude: latitudeOfCodeFellows longitude: longitudeOfCodeFellows success: ^ (NSArray<MapPoint *> * mapPoints) {
+    self.allMapPoints = mapPoints;
+    self.currentMapPoints = mapPoints;
     [self exitWaitMode];
-    
+  } failure: ^ (NSError *error) {
+    NSLog(@"Error: %@", error.localizedDescription);
+    [self exitWaitMode];
   }];
+
 }
 
 //-(void)viewWillAppear:(BOOL)animated {
@@ -133,7 +140,7 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   if (status == kCLAuthorizationStatusAuthorizedWhenInUse) {
     [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(manager.location.coordinate, initialMapViewDistance, initialMapViewDistance) animated:YES];
   } else {
-    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(47.622152, -122.312965);
+    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitudeOfCodeFellows, longitudeOfCodeFellows);
     [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(coordinate, initialMapViewDistance, initialMapViewDistance) animated:NO];
   }
 }
@@ -192,8 +199,11 @@ NSTimeInterval dismissViewAnimationDuration = 0.3;
   
   [self enterWaitMode];
   
-  [BackendService fetchMapPointsForGenre:genre completionHandler:^(NSArray *mapPoints, NSError *error) {
+  AppDelegate * appDelegate = [UIApplication sharedApplication].delegate;
+  [appDelegate.restaurantDataService fetchMapPointsForGenre: genre success: ^ (NSArray<MapPoint *> * mapPoints) {
     self.currentMapPoints = mapPoints;
+    [self exitWaitMode];
+  } failure: ^ (NSError * error) {
     [self exitWaitMode];
   }];
 }

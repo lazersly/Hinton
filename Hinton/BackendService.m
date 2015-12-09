@@ -12,94 +12,125 @@
 #import "GenreParser.h"
 #import "AFNetworking.h"
 
-static bool testMode = true;
+
+// Magic
+static NSString * urlAllRestaurants = @"http://52.88.209.205:2121/api/restaurant/all";
+static NSString * urlRestaurantByID = @"http://52.88.209.205:2121/api/restaurant/";
+static NSString * urlGenreList = @"http://52.88.209.205:2121/api/restaurant/genre/all";
+static NSString * urlMapPointsForGenre = @"http://52.88.209.205:2121/api/restaurant/genre/";
+
+
+@interface BackendService ()
+
+@property (strong, nonatomic) AFHTTPRequestOperationManager * manager;
+
+- (instancetype) init;
+
+@end
+
 
 @implementation BackendService
 
-+(void)fetchMapPointsForArea:(CGRect)area completionHandler:(void (^)(NSArray *mapPoints, NSError *error))completionHandler {
+// Initialize the AFNetworking manager.
+- (instancetype) init {
   
-  if (testMode) {
-  } else {
-    NSURL *fetchAllURLString = [NSURL URLWithString: @"http://52.88.209.205:2121/api/restaurant/all"];
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:fetchAllURLString.absoluteString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-      
-      NSArray *mapPoints = [MapPointParser mapPointsFromJSONDictionary:responseObject];
-      completionHandler(mapPoints, nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-      NSLog(@"Error: %@", error.localizedDescription);
-      completionHandler(nil, error);
-    }];
+  self = [super init];
+  if (self) {
+    self.manager = [AFHTTPRequestOperationManager manager];
   }
+  
+  return self;
   
 }
 
-+(void)fetchRestaurantForID:(NSString *)restaurantID completionHandler:(void (^)(Restaurant *restaurant, NSError *error))completionHandler {
+// Download a JSON document from the back-end server at the URL specified.
+// Because Objective-C does not support generics at the method-parameter level, we cannot assert NSDictionary vs. NSArray here; we can only pass back an "id" object.
+- (void) loadJSONFromURL: (NSURL *) url success: ( void (^)(id jsonObject) ) successHandler failure: ( void (^)(NSError * error) ) failureHandler {
   
-  if (testMode) {
-    NSError * error;
-    NSURL *url = [[NSBundle mainBundle] URLForResource: restaurantID withExtension: @"json"];
-    NSData *jsonData = [NSData dataWithContentsOfURL:url];
-    id jsonDictionary = [NSJSONSerialization JSONObjectWithData: jsonData options: 0 error: &error];
-    
-    if (!error) {
-      Restaurant *restaurant = [Restaurant restaurantFromJSONDictionary: jsonDictionary];
-      completionHandler(restaurant, nil);
-    }
-  } else {
-
-    NSURL *fetchRestaurantURLString = [NSURL URLWithString: @"http://52.88.209.205:2121/api/restaurant/"];
-    fetchRestaurantURLString = [fetchRestaurantURLString URLByAppendingPathComponent:restaurantID];
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:fetchRestaurantURLString.absoluteString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-      Restaurant *restaurant = [Restaurant restaurantFromJSONDictionary:responseObject];
-      completionHandler(restaurant, nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-      NSLog(@"Error: %@", error.localizedDescription);
-      completionHandler(nil, error);
-    }];
-  }
+  [self.manager GET: url.absoluteString parameters: nil
+       success: ^ (AFHTTPRequestOperation * operation, id responseObject) {
+         successHandler(responseObject);
+       }
+       failure: ^ (AFHTTPRequestOperation * operation, NSError * error) {
+         NSLog(@"Error retrieving JSON: %@", error.localizedDescription);
+         failureHandler(error);
+       }];
   
 }
 
-+(void)fetchGenresList:(void(^)(NSArray *genresList, NSError *error))completion {
+// Fetch the list of all restaurant locations near a given location.
+- (void) fetchRestaurantsNearLatitude: (double) latitude longitude: (double) longitude success: ( void (^)(NSArray<NSDictionary *> * jsonArray) ) successHandler failure: ( void (^)(NSError * error) ) failureHandler {
   
-  if (testMode) {
-    
-  } else {
-    NSURL *genresURL = [NSURL URLWithString: @"http://52.88.209.205:2121/api/restaurant/genre/all"];
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:genresURL.absoluteString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-      NSArray *genres = [GenreParser genresFromJSONArray:responseObject];
-      completion(genres, nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-      NSLog(@"Error: %@", error.localizedDescription);
-      completion(nil, error);
-    }];
-  }
+  NSURL * fetchAllRestaurantsURL = [NSURL URLWithString: urlAllRestaurants];
+  
+  [self loadJSONFromURL: fetchAllRestaurantsURL
+                success: ^ (id jsonObject) {
+                  if ( ![jsonObject isKindOfClass: [NSArray class]] )
+                  {
+                    NSLog(@"JSON is not in the expected format");
+                    return;
+                  }
+                  
+                  successHandler(jsonObject);
+                }
+                failure: failureHandler];
   
 }
 
-+(void)fetchMapPointsForGenre:(NSString *)genre completionHandler:(void (^)(NSArray *mapPoints, NSError *error))completionHandler {
+// Fetch detailed information on a specific restaurant.
+- (void) fetchRestaurantForID: (NSString *) restaurantID success: ( void (^)(NSDictionary * jsonDictionary) ) successHandler failure: ( void (^)(NSError * error) ) failureHandler {
   
-  if (testMode) {
-    
-  } else {
-    NSURL *mapPointforGenreURL = [NSURL URLWithString:@"http://52.88.209.205:2121/api/restaurant/genre/"];
-    mapPointforGenreURL = [mapPointforGenreURL URLByAppendingPathComponent:genre];
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:mapPointforGenreURL.absoluteString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-      NSArray *mapPoints = [MapPointParser mapPointsFromJSONDictionary:responseObject];
-      completionHandler(mapPoints, nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-      NSLog(@"Error: %@", error.localizedDescription);
-      completionHandler(nil, error);
-    }];
-  }
+  NSURL * fetchRestaurantURL = [[NSURL URLWithString: urlRestaurantByID] URLByAppendingPathComponent: restaurantID];
+  
+  [self loadJSONFromURL: fetchRestaurantURL
+                success: ^ (id jsonObject) {
+                  if ( ![jsonObject isKindOfClass: [NSDictionary class]] )
+                  {
+                    NSLog(@"JSON is not in the expected format");
+                    return;
+                  }
+                  
+                  successHandler(jsonObject);
+                }
+                failure: failureHandler];
+  
+}
+
+// Fetch the list of all restaurant genres.
+- (void) fetchGenresList: ( void (^)(NSArray<NSDictionary *> * jsonArray) ) successHandler failure: ( void (^)(NSError * error) ) failureHandler {
+  
+  NSURL * genresURL = [NSURL URLWithString: urlGenreList];
+  
+  [self loadJSONFromURL: genresURL
+                success: ^ (id jsonObject) {
+                  if ( ![jsonObject isKindOfClass: [NSArray class]] )
+                  {
+                    NSLog(@"JSON is not in the expected format");
+                    return;
+                  }
+                  
+                  successHandler(jsonObject);
+                }
+                failure: failureHandler];
+  
+}
+
+// Fetch the list of all restaurant locations in a given genre.
+- (void) fetchMapPointsForGenre: (NSString *) genre success: ( void (^)(NSArray<NSDictionary *> * jsonArray) ) successHandler failure: ( void (^)(NSError * error) ) failureHandler {
+  
+  NSURL * mapPointforGenreURL = [[NSURL URLWithString: urlMapPointsForGenre] URLByAppendingPathComponent: genre];
+  
+  [self loadJSONFromURL: mapPointforGenreURL
+                success: ^ (id jsonObject) {
+                  if ( ![jsonObject isKindOfClass: [NSArray class]] )
+                  {
+                    NSLog(@"JSON is not in the expected format");
+                    return;
+                  }
+                  
+                  successHandler(jsonObject);
+                }
+                failure: failureHandler];
   
 }
 

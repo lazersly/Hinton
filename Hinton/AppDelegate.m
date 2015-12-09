@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "DataService.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +18,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   // Override point for customization after application launch.
+
+  self.restaurantDataService = [[DataService alloc] initWithTestMode: true];
+  
   return YES;
 }
 

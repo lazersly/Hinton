@@ -7,7 +7,8 @@
 //
 
 #import "RestaurantDetailViewController.h"
-#import "BackendService.h"
+#import "AppDelegate.h"
+#import "DataService.h"
 #import "Restaurant.h"
 #import "MapPoint.h"
 #import "RestaurantMapTableViewCell.h"
@@ -124,18 +125,20 @@
 
 -(void)setAnnotation:(MapPoint *)annotation {
   _annotation = annotation;
-  
-  [BackendService fetchRestaurantForID:annotation.restaurantId completionHandler:^(Restaurant *restaurant, NSError *error) {
+
+  AppDelegate * appDelegate = [UIApplication sharedApplication].delegate;
+  [appDelegate.restaurantDataService fetchRestaurantForID: annotation.restaurantId success: ^ (Restaurant * restaurant) {
     if (restaurant) {
       NSLog(@"this restr's price tier: %@", restaurant.pricePoint);
       self.restaurantToDisplay = restaurant;
       self.tableView.delegate = self;
       self.tableView.dataSource = self;
       [self.tableView reloadData];
-    } else {
-      NSLog(@"Error: %@", error);
     }
+  } failure: ^ (NSError * error) {
+    NSLog(@"Error: %@", error);
   }];
+
 }
 
 

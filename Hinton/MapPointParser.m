@@ -11,10 +11,10 @@
 
 @implementation MapPointParser
 
-+(NSArray *)mapPointsFromJSONDictionary:(NSDictionary *)jsonDictionary {
++ (NSArray *) mapPointsFromJSONArray: (NSArray *) jsonArray {
   NSMutableArray *returnArray = [NSMutableArray array];
   
-  for (NSDictionary *mapPointInfo in jsonDictionary) {
+  for (NSDictionary *mapPointInfo in jsonArray) {
     NSString *restaurantID = mapPointInfo[@"_id"];
     
     NSDictionary *mapInfo = mapPointInfo[@"map"];

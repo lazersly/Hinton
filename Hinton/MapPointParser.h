@@ -10,6 +10,6 @@
 
 @interface MapPointParser : NSObject
 
-+(NSArray *)mapPointsFromJSONDictionary:(NSDictionary *)jsonDictionary;
++ (NSArray *) mapPointsFromJSONArray: (NSArray *) jsonArray;
 
 @end
