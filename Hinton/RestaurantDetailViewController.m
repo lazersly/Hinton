@@ -129,7 +129,6 @@
   AppDelegate * appDelegate = [UIApplication sharedApplication].delegate;
   [appDelegate.restaurantDataService fetchRestaurantForID: annotation.restaurantId success: ^ (Restaurant * restaurant) {
     if (restaurant) {
-      NSLog(@"this restr's price tier: %@", restaurant.pricePoint);
       self.restaurantToDisplay = restaurant;
       self.tableView.delegate = self;
       self.tableView.dataSource = self;

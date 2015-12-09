@@ -16,6 +16,10 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *restaurantNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *restaurantGenreLabel;
+@property (weak, nonatomic) IBOutlet UILabel *price1;
+@property (weak, nonatomic) IBOutlet UILabel *price2;
+@property (weak, nonatomic) IBOutlet UILabel *price3;
+@property (weak, nonatomic) IBOutlet UILabel *price4;
 @property (strong, nonatomic) IBOutlet UIButton *mainWebsiteButton;
 @property (strong, nonatomic) IBOutlet UIButton *menuWebsiteButton;
 @property (strong, nonatomic) IBOutlet UIButton *blogWebsiteButton;
@@ -34,20 +38,45 @@
 @property (strong, nonatomic) Address *restaurantAddress;
 @property (strong, nonatomic) Hours *restaurantHours;
 
+@property (strong, nonatomic) UIColor * grayColor;
+@property (strong, nonatomic) UIColor * greenColor;
+
 @end
+
 
 @implementation RestaurantInfoTableViewCell
 
+
 - (void)awakeFromNib {
     // Initialization code
-  
+
+  self.greenColor = [UIColor colorWithRed: 0.0 green: 0.5 blue: 0.0 alpha: 1.0];
+  self.grayColor = [UIColor colorWithRed: 0.9 green: 0.9 blue: 0.9 alpha: 1.0];
+
   self.restaurantNameLabel.text = nil;
   self.restaurantGenreLabel.text = nil;
   self.restaurantPhoneLabel.text = nil;
   self.restaurantAddressLabel.text = nil;
   self.restaurantHoursLabel.text = nil;
   self.recommendedItemLabel.text = nil;
-  
+
+  // Initialize the price indicators to gray.
+  self.price1.textColor = self.grayColor;
+  self.price2.textColor = self.grayColor;
+  self.price3.textColor = self.grayColor;
+  self.price4.textColor = self.grayColor;
+
+  // Initialize the price indicators with the local currency symbol.
+  // This code isn't correct - we should use the locale of the restaurant, not the phone.
+  // (i.e. if a British user is looking at a restaurant in France, he should see € not £)
+  NSLocale * myLocale = [NSLocale currentLocale];
+  NSString * currencySymbol = [myLocale objectForKey:NSLocaleCurrencySymbol];
+  self.price1.text = currencySymbol;
+  self.price2.text = currencySymbol;
+  self.price3.text = currencySymbol;
+  self.price4.text = currencySymbol;
+
+
   //enable interaction for phone number label
   self.restaurantPhoneLabel.userInteractionEnabled = YES;
   UITapGestureRecognizer *tapGesture =
@@ -81,7 +110,6 @@
   self.restaurantAddress = restaurantToDisplay.address;
   self.restaurantHours = restaurantToDisplay.hours;
   
-  self.restaurantGenreLabel.text = [NSString stringWithFormat:@"%@, %@", [self constructGenreLabelForGenres:self.restaurantGenre], self.restaurantPrice];
   self.recommendedItemLabel.text = [self constructRecommendedItemsLabelForItems:restaurantToDisplay.recipes];
   
   [self setupWebsiteButtons];
@@ -96,33 +124,19 @@
 
 -(void)setRestaurantPrice:(NSString *)restaurantPrice {
   
+  _restaurantPrice = restaurantPrice;
   NSInteger price = restaurantPrice.integerValue;
-  NSString *priceRepresentation = [NSString string];
-  
-  switch (price) {
-    case 1:
-      priceRepresentation = @"$";
-      break;
-    case 2:
-      priceRepresentation = @"$$";
-      break;
-    case 3:
-      priceRepresentation = @"$$$";
-      break;
-    case 4:
-      priceRepresentation = @"$$$$";
-      break;
-      
-    default:
-      priceRepresentation = @"Variable Pricing";
-      break;
-  }
-  
-  _restaurantPrice = priceRepresentation;
+
+  if (price >= 1) { self.price1.textColor = self.greenColor; } else { self.price1.textColor = self.grayColor; }
+  if (price >= 2) { self.price2.textColor = self.greenColor; } else { self.price2.textColor = self.grayColor; }
+  if (price >= 3) { self.price3.textColor = self.greenColor; } else { self.price3.textColor = self.grayColor; }
+  if (price >= 4) { self.price4.textColor = self.greenColor; } else { self.price4.textColor = self.grayColor; }
+
 }
 
 -(void)setRestaurantGenre:(NSArray *)restaurantGenre {
   _restaurantGenre = restaurantGenre;
+  self.restaurantGenreLabel.text = [self constructGenreLabelForGenres:self.restaurantGenre];
 }
 
 -(void)setMainWebsiteURL:(NSURL *)mainWebsiteURL {
