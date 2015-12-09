@@ -26,7 +26,6 @@
 		DF8E3D9D1C117F070010D372 /* MapPointParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D921C117F070010D372 /* MapPointParser.m */; };
 		DF8E3D9E1C117F070010D372 /* MenuItemPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D941C117F070010D372 /* MenuItemPhoto.m */; };
 		DF8E3D9F1C117F070010D372 /* Restaurant.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D961C117F070010D372 /* Restaurant.m */; };
-		DF8E3DA01C117F070010D372 /* RestaurantParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D981C117F070010D372 /* RestaurantParser.m */; };
 		DF9648C71C117531005A0753 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF9648C61C117531005A0753 /* MapKit.framework */; };
 		DFF32A281C11485200CCF53C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DFF32A271C11485200CCF53C /* main.m */; };
 		DFF32A2B1C11485200CCF53C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFF32A2A1C11485200CCF53C /* AppDelegate.m */; };
@@ -72,8 +71,6 @@
 		DF8E3D941C117F070010D372 /* MenuItemPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuItemPhoto.m; sourceTree = "<group>"; };
 		DF8E3D951C117F070010D372 /* Restaurant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Restaurant.h; sourceTree = "<group>"; };
 		DF8E3D961C117F070010D372 /* Restaurant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Restaurant.m; sourceTree = "<group>"; };
-		DF8E3D971C117F070010D372 /* RestaurantParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantParser.h; sourceTree = "<group>"; };
-		DF8E3D981C117F070010D372 /* RestaurantParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantParser.m; sourceTree = "<group>"; };
 		DF9648C61C117531005A0753 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DFF32A231C11485200CCF53C /* Hinton.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hinton.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFF32A271C11485200CCF53C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -171,8 +168,6 @@
 				DF8E3D941C117F070010D372 /* MenuItemPhoto.m */,
 				DF8E3D951C117F070010D372 /* Restaurant.h */,
 				DF8E3D961C117F070010D372 /* Restaurant.m */,
-				DF8E3D971C117F070010D372 /* RestaurantParser.h */,
-				DF8E3D981C117F070010D372 /* RestaurantParser.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -388,7 +383,6 @@
 				DF8E3D881C117E800010D372 /* ImageResizer.m in Sources */,
 				DF8E3D751C117A1D0010D372 /* SearchTableViewController.m in Sources */,
 				DF8E3D9A1C117F070010D372 /* GenreParser.m in Sources */,
-				DF8E3DA01C117F070010D372 /* RestaurantParser.m in Sources */,
 				DFF32A281C11485200CCF53C /* main.m in Sources */,
 				DF8E3D851C117E6F0010D372 /* ImageFetcher.m in Sources */,
 				DF8E3D9C1C117F070010D372 /* MapPoint.m in Sources */,

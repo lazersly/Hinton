@@ -8,7 +8,7 @@
 
 #import "BackendService.h"
 #import "MapPointParser.h"
-#import "RestaurantParser.h"
+#import "Restaurant.h"
 #import "GenreParser.h"
 #import "AFNetworking.h"
 
@@ -44,7 +44,7 @@ static bool testMode = true;
     id jsonDictionary = [NSJSONSerialization JSONObjectWithData: jsonData options: 0 error: &error];
     
     if (!error) {
-      Restaurant *restaurant = [RestaurantParser restaurantFromJSONDictionary: jsonDictionary];
+      Restaurant *restaurant = [Restaurant restaurantFromJSONDictionary: jsonDictionary];
       completionHandler(restaurant, nil);
     }
   } else {
@@ -54,7 +54,7 @@ static bool testMode = true;
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager GET:fetchRestaurantURLString.absoluteString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-      Restaurant *restaurant = [RestaurantParser restaurantFromJSONDictionary:responseObject];
+      Restaurant *restaurant = [Restaurant restaurantFromJSONDictionary:responseObject];
       completionHandler(restaurant, nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
       NSLog(@"Error: %@", error.localizedDescription);
