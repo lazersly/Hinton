@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		90C2DD1B6D8A7298F88AC08F /* libPods-Hinton.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F6DC514E2C2091176CC0FB1 /* libPods-Hinton.a */; };
+		DF12290C1C11819600B293F0 /* SampleData in Resources */ = {isa = PBXBuildFile; fileRef = DF12290B1C11819600B293F0 /* SampleData */; };
 		DF8E3D6D1C11792F0010D372 /* food_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DF8E3D6C1C11792F0010D372 /* food_1.jpg */; };
 		DF8E3D6F1C1179380010D372 /* food_2.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DF8E3D6E1C1179380010D372 /* food_2.jpeg */; };
 		DF8E3D711C1179D90010D372 /* RestaurantDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8E3D701C1179D90010D372 /* RestaurantDetailViewController.m */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		68838A23A36646F41E4CAD2A /* Pods-Hinton.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hinton.release.xcconfig"; path = "Pods/Target Support Files/Pods-Hinton/Pods-Hinton.release.xcconfig"; sourceTree = "<group>"; };
 		9F6DC514E2C2091176CC0FB1 /* libPods-Hinton.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Hinton.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF12290B1C11819600B293F0 /* SampleData */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SampleData; sourceTree = "<group>"; };
 		DF8E3D6C1C11792F0010D372 /* food_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = food_1.jpg; sourceTree = "<group>"; };
 		DF8E3D6E1C1179380010D372 /* food_2.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = food_2.jpeg; sourceTree = "<group>"; };
 		DF8E3D701C1179D90010D372 /* RestaurantDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantDetailViewController.m; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				DF99BCAF1C1177C500D073F7 /* Model */,
 				DF99BCAE1C11778400D073F7 /* Views */,
 				DF8E3D6B1C1178F50010D372 /* Graphical assets */,
+				DF12290B1C11819600B293F0 /* SampleData */,
 				DFF32A261C11485200CCF53C /* Supporting Files */,
 			);
 			path = Hinton;
@@ -310,6 +313,7 @@
 				DF8E3D6D1C11792F0010D372 /* food_1.jpg in Resources */,
 				DF8E3D6F1C1179380010D372 /* food_2.jpeg in Resources */,
 				DFF32A331C11485200CCF53C /* Assets.xcassets in Resources */,
+				DF12290C1C11819600B293F0 /* SampleData in Resources */,
 				DFF32A311C11485200CCF53C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
