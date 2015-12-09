@@ -81,7 +81,7 @@ const NSTimeInterval dismissViewAnimationDuration = 0.3;
     CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitudeOfCodeFellows, longitudeOfCodeFellows);
     [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(coordinate, initialMapViewDistance, initialMapViewDistance) animated:NO];
   }
-  
+
   [self enterWaitMode];
   
   AppDelegate * appDelegate = [UIApplication sharedApplication].delegate;

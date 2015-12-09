@@ -16,13 +16,18 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *restaurantNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *restaurantGenreLabel;
-@property (weak, nonatomic) IBOutlet UILabel *price1;
-@property (weak, nonatomic) IBOutlet UILabel *price2;
-@property (weak, nonatomic) IBOutlet UILabel *price3;
-@property (weak, nonatomic) IBOutlet UILabel *price4;
+
+@property (strong, nonatomic) IBOutlet UILabel *price1;
+@property (strong, nonatomic) IBOutlet UILabel *price2;
+@property (strong, nonatomic) IBOutlet UILabel *price3;
+@property (strong, nonatomic) IBOutlet UILabel *price4;
+
 @property (strong, nonatomic) IBOutlet UIButton *mainWebsiteButton;
+@property (strong, nonatomic) IBOutlet UILabel *mainMenuSeparator;
 @property (strong, nonatomic) IBOutlet UIButton *menuWebsiteButton;
+@property (strong, nonatomic) IBOutlet UILabel *menuBlogSeparator;
 @property (strong, nonatomic) IBOutlet UIButton *blogWebsiteButton;
+
 @property (strong, nonatomic) IBOutlet UILabel *restaurantPhoneLabel;
 @property (strong, nonatomic) IBOutlet UILabel *restaurantAddressLabel;
 @property (strong, nonatomic) IBOutlet UILabel *restaurantHoursLabel;
@@ -270,24 +275,36 @@
   }
 }
 
--(void)setupWebsiteButtons {
-  if ([self.menuWebsiteURL.absoluteString isEqualToString:@""] || !self.menuWebsiteURL) {
-    self.menuWebsiteButton.enabled = NO;
-  } else {
-    self.menuWebsiteButton.enabled = YES;
+
+- (void) setupWebsiteButtons {
+
+  bool hasWebsite = (self.mainWebsiteURL && self.mainWebsiteURL.absoluteString.length > 0);
+  bool hasMenu = (self.menuWebsiteURL && self.menuWebsiteURL.absoluteString.length > 0);
+  bool hasBlog = (self.blogWebsiteURL && self.blogWebsiteURL.absoluteString.length > 0);
+
+  UIView * parent = self.mainWebsiteButton.superview;
+
+  if (!hasWebsite) {
+    [self.mainWebsiteButton removeFromSuperview];
+    [self.mainMenuSeparator removeFromSuperview];
+  }
+
+  if (!hasMenu) {
+    [self.menuWebsiteButton removeFromSuperview];
+    [self.menuBlogSeparator removeFromSuperview];
+    if (!hasBlog) { [self.mainMenuSeparator removeFromSuperview]; }
   }
   
-  if ([self.mainWebsiteURL.absoluteString isEqualToString:@""] || !self.mainWebsiteURL) {
-    self.mainWebsiteButton.enabled = NO;
-  } else {
-    self.mainWebsiteButton.enabled = YES;
+  if (!hasBlog) {
+    [self.blogWebsiteButton removeFromSuperview];
+    [self.menuBlogSeparator removeFromSuperview];
   }
-  
-  if ([self.blogWebsiteURL.absoluteString isEqualToString:@""] || !self.blogWebsiteURL) {
-    self.blogWebsiteButton.enabled = NO;
-  } else {
-    self.blogWebsiteButton.enabled = YES;
-  }
+
+
+  [parent sizeToFit];
+
+  [self layoutIfNeeded];
+
 }
 
 @end
