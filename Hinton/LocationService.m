@@ -52,12 +52,16 @@
     case kCLAuthorizationStatusAuthorizedWhenInUse:
     case kCLAuthorizationStatusAuthorizedAlways:
 
-      NSLog(@"Location manager received user consent for tracking. Requesting rough location (nearest 3km).");
+      NSLog(@"Location manager received user consent for tracking.");
 
       // Since we ask our map view to track our location when the app starts, one might ask why this code is needed.
-      // The answer is if location services are turned off when the app starts, then get turned on after we are running,
-      // the map won't realize it until we force an update to our most-recent location using this code.
-      if ([CLLocationManager locationServicesEnabled]) {
+      // The answer is that location services may be turned off when the app starts;
+      // if they get turned on after we are running, the map won't realize it until someone else (the user or our code)
+      // requests an update to our most-recent location.
+      // Note that we can only submit an explicit request like this in iOS 9 and later; since we still support iOS 8,
+      // we must first test for the selector.
+      if ([CLLocationManager locationServicesEnabled] && [manager respondsToSelector: @selector(requestLocation)]) {
+        NSLog(@"Requesting rough location (nearest 3km).");
         manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
         [manager requestLocation];
       }
