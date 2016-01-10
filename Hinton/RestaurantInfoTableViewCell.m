@@ -30,7 +30,7 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *restaurantPhoneLabel;
 @property (strong, nonatomic) IBOutlet UILabel *restaurantAddressLabel;
-@property (strong, nonatomic) IBOutlet UILabel *restaurantHoursLabel;
+@property (strong, nonatomic) IBOutlet UIButton *restaurantHoursButton;
 @property (strong, nonatomic) IBOutlet UILabel *recommendedItemLabel;
 
 @property (strong, nonatomic) NSString *restaurantName;
@@ -46,6 +46,8 @@
 @property (strong, nonatomic) UIColor * grayColor;
 @property (strong, nonatomic) UIColor * greenColor;
 
+@property bool hoursExpanded;
+
 @end
 
 
@@ -53,7 +55,7 @@
 
 
 - (void)awakeFromNib {
-    // Initialization code
+  self.hoursExpanded = false;
 
   self.greenColor = [UIColor colorWithRed: 0.0 green: 0.5 blue: 0.0 alpha: 1.0];
   self.grayColor = [UIColor colorWithRed: 0.9 green: 0.9 blue: 0.9 alpha: 1.0];
@@ -62,7 +64,8 @@
   self.restaurantGenreLabel.text = nil;
   self.restaurantPhoneLabel.text = nil;
   self.restaurantAddressLabel.text = nil;
-  self.restaurantHoursLabel.text = nil;
+  [self.restaurantHoursButton setTitle: nil forState: UIControlStateNormal];
+  self.restaurantHoursButton.titleLabel.numberOfLines = 0;
   self.recommendedItemLabel.text = nil;
 
   // Initialize the price indicators to gray.
@@ -72,21 +75,26 @@
   self.price4.textColor = self.grayColor;
 
   // Initialize the price indicators with the local currency symbol.
-  // This code isn't correct - we should use the locale of the restaurant, not the phone.
+  // This code isn't correct - we should use the location of the restaurant, not the locale of the phone.
   // (i.e. if a British user is looking at a restaurant in France, he should see € not £)
-  NSLocale * myLocale = [NSLocale currentLocale];
-  NSString * currencySymbol = [myLocale objectForKey:NSLocaleCurrencySymbol];
+  // NSLocale * myLocale = [NSLocale currentLocale];
+  // NSString * currencySymbol = [myLocale objectForKey: NSLocaleCurrencySymbol];
+  // Since we don't have a country field in the Address object, just use $ for now.
+  NSString * currencySymbol = @"$";
   self.price1.text = currencySymbol;
   self.price2.text = currencySymbol;
   self.price3.text = currencySymbol;
   self.price4.text = currencySymbol;
-
 
   //enable interaction for phone number label
   self.restaurantPhoneLabel.userInteractionEnabled = YES;
   UITapGestureRecognizer *tapGesture =
   [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callPhone:)];
   [self.restaurantPhoneLabel addGestureRecognizer:tapGesture];
+
+  // We have just changed the size of our views, so recalculate layout.
+  [self layoutSubviews];
+  [self layoutIfNeeded];
 }
 
 -(IBAction)callPhone:(id)sender {
@@ -179,50 +187,17 @@
   self.restaurantAddressLabel.text = addressString;
 }
 
--(void)setRestaurantHours:(Hours *)restaurantHours {
+- (void) setRestaurantHours: (Hours *) restaurantHours {
   _restaurantHours = restaurantHours;
-#warning Incomplete
-  //needs something to detect what day of the week it is and show that day's hours
-  //get current day
-  NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-  NSDateComponents *comps = [calendar components:NSCalendarUnitWeekday fromDate:[NSDate date]];
-  long weekday = [comps weekday];
-  
-  NSLog(@"today's day num: %ld", weekday);
-  
-  switch (weekday) {
-    case 0:
-      self.restaurantHoursLabel.text = restaurantHours.sundayHours;
-      break;
-      
-    case 1:
-     self.restaurantHoursLabel.text = restaurantHours.mondayHours;
-      break;
-      
-    case 2:
-      self.restaurantHoursLabel.text = restaurantHours.tuesdayHours;
-      break;
-      
-    case 3:
-      self.restaurantHoursLabel.text = restaurantHours.wednesdayHours;
-      break;
-      
-    case 4:
-      self.restaurantHoursLabel.text = restaurantHours.thursdayHours;
-      break;
-      
-    case 5:
-      self.restaurantHoursLabel.text = restaurantHours.fridayHours;
-      break;
-      
-    case 6:
-      self.restaurantHoursLabel.text = restaurantHours.saturdayHours;
-      break;
-      
-    default:
-      break;
-  }
-  
+  [self setupHoursLabel];
+}
+
+- (void)hoursButtonPressed {
+  // If we are expanded to show hours for all days of the week, then collapse to show only today's hours.
+  // If we are collapsed, then expand.
+  self.hoursExpanded = ! self.hoursExpanded;
+
+  [self setupHoursLabel];
 }
 
 - (IBAction)mainWebsiteButtonPressed:(id)sender {
@@ -282,7 +257,7 @@
   bool hasMenu = (self.menuWebsiteURL && self.menuWebsiteURL.absoluteString.length > 0);
   bool hasBlog = (self.blogWebsiteURL && self.blogWebsiteURL.absoluteString.length > 0);
 
-  UIView * parent = self.mainWebsiteButton.superview;
+  UIView * buttonContainer = self.mainWebsiteButton.superview;
 
   if (!hasWebsite) {
     [self.mainWebsiteButton removeFromSuperview];
@@ -300,11 +275,58 @@
     [self.menuBlogSeparator removeFromSuperview];
   }
 
+  [buttonContainer sizeToFit];
 
-  [parent sizeToFit];
+}
 
-  [self layoutIfNeeded];
+- (void) setupHoursLabel {
 
+  // Get the user's current calendar.
+  NSCalendar * calendar = [NSCalendar currentCalendar];
+
+  // Get the localized "standalone" weekday names that are appropriate for headings and labels,
+  // which may be different from the weekday names used in a specific date: "Среда" versus "среды, 25 октября 1917"
+  NSArray<NSString *> * weekdays = [calendar shortStandaloneWeekdaySymbols];
+
+  // Apple's calendar API always returns weekdays using the convention that 1 == Sunday, 7 == Saturday.
+  // It is up to you to adjust the order to the local calendar, and to deal with off-by-one issues.
+  NSUInteger firstWeekday = [calendar firstWeekday] - 1;
+  NSInteger currentWeekday = [calendar component: NSCalendarUnitWeekday fromDate: [NSDate date]] - 1;
+
+  // Build an array of restaurant hours, always starting with Sunday to match Apple's ordering.
+  NSMutableArray<NSString *> * hours = [[NSMutableArray alloc] init];
+  [hours addObject: self.restaurantHours.sundayHours];
+  [hours addObject: self.restaurantHours.mondayHours];
+  [hours addObject: self.restaurantHours.tuesdayHours];
+  [hours addObject: self.restaurantHours.wednesdayHours];
+  [hours addObject: self.restaurantHours.thursdayHours];
+  [hours addObject: self.restaurantHours.fridayHours];
+  [hours addObject: self.restaurantHours.saturdayHours];
+
+  NSString * hoursLabel;
+
+  if (self.hoursExpanded) {
+
+    // Build the rows of the label, but start with the local calendar's first day of the week and wrap as needed.
+    NSUInteger dayIndex = firstWeekday;
+    NSMutableString * tempHoursLabel = [[NSMutableString alloc] init];
+    NSString * newline = @"";
+
+    for (NSUInteger i = 0; i < [hours count]; i++) {
+      dayIndex = (i + firstWeekday) % [hours count];
+      [tempHoursLabel appendFormat: @"%@%@: %@", newline, [weekdays objectAtIndex: dayIndex], [hours objectAtIndex: dayIndex]];
+      newline = @"\n";
+    }
+
+    hoursLabel = tempHoursLabel;
+  } else {
+
+    // Only show today's hours.
+    hoursLabel = [NSString stringWithFormat: @"%@ ▼", [hours objectAtIndex: currentWeekday]];
+
+  }
+
+  [self.restaurantHoursButton setTitle: hoursLabel forState: UIControlStateNormal];
 }
 
 @end

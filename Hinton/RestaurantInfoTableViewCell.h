@@ -12,5 +12,6 @@
 @interface RestaurantInfoTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) Restaurant *restaurantToDisplay;
+- (void)hoursButtonPressed;
 
 @end

@@ -33,17 +33,20 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  
-  
   self.imageFetcher = [[ImageFetcher alloc] init];
   self.cellImageSize = CGSizeMake(600, 400);
   self.view.tintColor = [UIColor darkGrayColor];
 //  self.photos = @[[UIImage imageNamed:@"food_1.jpg"], [UIImage imageNamed:@"food_2.jpeg"]];
-//  self.tableView.rowHeight = UITableViewAutomaticDimension;
-  
+
+  // Configure table view for dynamic row height.
+  self.tableView.delegate = self;
+  self.tableView.dataSource = self;
+  self.tableView.rowHeight = UITableViewAutomaticDimension;
+  self.tableView.estimatedRowHeight = 300.0;
+
 }
 
-#pragma mark <UICollectionViewDataSource>
+#pragma mark <UITableViewDataSource>
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
   return 1;
@@ -89,7 +92,11 @@
 #pragma mark - Custom Methods
 
 -(NSInteger)computeNumberOfRows {
-  return 2 + self.photos.count;
+  if (self.restaurantToDisplay) {
+    return 2 + self.photos.count;
+  } else {
+    return 0;
+  }
 }
 
 -(RestaurantInfoTableViewCell *)configureInfoCell:(RestaurantInfoTableViewCell *)infoCell {
@@ -129,10 +136,10 @@
   AppDelegate * appDelegate = [UIApplication sharedApplication].delegate;
   [appDelegate.restaurantDataService fetchRestaurantForID: annotation.restaurantId success: ^ (Restaurant * restaurant) {
     if (restaurant) {
-      self.restaurantToDisplay = restaurant;
-      self.tableView.delegate = self;
-      self.tableView.dataSource = self;
-      [self.tableView reloadData];
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        self.restaurantToDisplay = restaurant;
+        [self.tableView reloadData];
+      }];
     }
   } failure: ^ (NSError * error) {
     NSLog(@"Error: %@", error);
@@ -156,4 +163,20 @@
     [mapItem openInMapsWithLaunchOptions:nil];
   }
 }
+
+- (IBAction)hoursButtonPressed:(UIButton *)sender {
+
+  // Tell the TableView that we are changing the height of an existing
+  // cell, so it can animate the change for us and (more importantly)
+  // move the surrounding cells up or down as needed.
+  [self.tableView beginUpdates];
+
+  NSIndexPath * indexPath = [NSIndexPath indexPathForRow: 0 inSection: 0];
+  RestaurantInfoTableViewCell * cell = [self.tableView cellForRowAtIndexPath: indexPath];
+  [cell hoursButtonPressed];
+
+  [self.tableView endUpdates];
+
+}
+
 @end
